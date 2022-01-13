@@ -82,7 +82,7 @@ export default function HomeScreen(props) {
           <View style={{ flexDirection: 'row' }}>
             <View>
               <Button
-                title="   OK   "
+                title="    OK    "
                 onPress={addChat}
               />
             </View>
