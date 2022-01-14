@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import styles from './styles'
 import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native'
-import ChatScript from './scripts'
+import ChatsDB from '../../firebase/database/chats'
 import firebase from '../../firebase/config'
 import { onSnapshot, collection, query, doc, where, orderBy } from 'firebase/firestore'
 
@@ -13,7 +13,7 @@ export default function ChatScreen(props) {
   const [positionY, setPositionY] = useState(null)
   const [visibleToLastBtn, setVisibleToLastBtn] = useState({height: 0})
 
-  const script = new ChatScript()
+  const chatsDB = new ChatsDB()
 
   useEffect(() => {
     const usSubscribeRetrieveMessage = onSnapshot(query(collection(doc(firebase, 'chats', props.route.params.id), 'messages'), orderBy('msgNo', 'desc')), (data) => {
@@ -21,17 +21,6 @@ export default function ChatScreen(props) {
     })
     return () => usSubscribeRetrieveMessage()
   }, [])
-
-  /*const retrieveMessage = () => {
-    script.getMessages(props.route.params.id, lastMsg).then(data => {
-      if(data.ret != messages) {
-        setMessages(data.ret)
-        setLastMsg(data.lastMsg ? data.lastMsg : 'end')
-        setLastMsgNo(data.lastMsgNo)
-        //console.log(data.lastMsgNo)
-      }
-    })
-  }*/
 
   const handlerScrollToEnd = (event) => {
     scrollRef.scrollToEnd({animated: false})
@@ -51,7 +40,7 @@ export default function ChatScreen(props) {
 
   const sentMessage = () => {
     if(msgInput && msgInput.match(/^ *$/) == null) {
-      script.sentMessage(props.route.params.id, msgInput, messages.length > 0 ? messages[0].msgNo+1 : 1).then(() => {
+      chatsDB.sentMessage(props.route.params.id, msgInput, messages.length > 0 ? messages[0].msgNo+1 : 1).then(() => {
         setMsgInput('')
         handlerScrollToEnd()
       })

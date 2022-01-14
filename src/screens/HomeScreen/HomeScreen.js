@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Button, TextInput, Modal, View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import styles from './styles'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import HomeScript from './scripts'
+import ChatsDB from '../../firebase/database/chats'
 import firebase from '../../firebase/config'
 import { collection, getDocs, deleteDoc, query, where, addDoc, doc, orderBy, onSnapshot } from 'firebase/firestore';
 
@@ -11,7 +11,7 @@ export default function HomeScreen(props) {
   const [chatId, setChatId] = useState(null)
   const [chats, setChats] = useState([])
 
-  const script = new HomeScript()
+  const chatsDB = new ChatsDB()
 
   const chatsCol = collection(firebase, 'chats')
 
@@ -23,14 +23,8 @@ export default function HomeScreen(props) {
     return () => unSubscribeRetrieveChat()
   }, [])
 
-  /*const getAllChats = () => {
-    script.getAllChats().then(data => {
-      setChat(data)
-    })
-  }*/
-
   const addChat = () => {
-    script.addChat(chatId).then(() => {
+    chatsDB.addChat(chatId).then(() => {
       setModalAdd(false)
       setChatId(null)
     })
